@@ -43,23 +43,13 @@ var game = new Phaser.Game(config);
 
 function preload ()
 {
-  //Leaving this in to allow rendering images on local machine due to CORS policy restriction for file:// paths and if assets are no longer hosted on pauljuneauengineer.com
-  // this.load.setBaseURL('http://labs.phaser.io');
-  // this.load.image('sky', 'assets/skies/sky4.png');
-  // this.load.image('ground', 'assets/sprites/platform.png');
-  // this.load.image('orb', 'assets/sprites/orb-red.png');
-  // this.load.image('skull', 'assets/sprites/skull.png');
-  // this.load.spritesheet('dude', 'assets/sprites/dude.png', { frameWidth: 32, frameHeight: 48 });
-  var baseUrl = window.location.href;
-  if(baseUrl.startsWith('file')) {
-    baseUrl = 'https://www.pauljuneauengineer.com/wmc-game-phaser-poc/';
-  }
-  this.load.setBaseURL(baseUrl+'assets/images');
-  this.load.image('sky', 'sky4.png');
-  this.load.image('ground', 'platform.png');
-  this.load.image('orb', 'orb-red.png');
-  this.load.image('skull', 'skull.png');
-  this.load.spritesheet('dude', 'dude.png', { frameWidth: 32, frameHeight: 48 });
+  var baseUrl = 'https://www.pauljuneauengineer.com/game-assets/';
+  this.load.setBaseURL(baseUrl);
+  this.load.image('sky', 'skies/phaser_labs_sky4.png');
+  this.load.image('ground', 'sprites/phaser_labs_platform.png');
+  this.load.image('orb', 'sprites/phaser_labs_orb-red.png');
+  this.load.image('skull', 'sprites/phaser_labs_skull.png');
+  this.load.spritesheet('dude', 'sprites/phaser_labs_dude.png', { frameWidth: 32, frameHeight: 48 });
 }
 
 function create ()

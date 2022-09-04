@@ -47,6 +47,7 @@ function preload ()
   this.load.image('sky', 'skies/phaser_labs_sky4.png');
   this.load.image('birdFlying_1','sprites/bevouliin-free-flying-bird-game-character-sprite-sheets/images/fly/frame-1.png');
   this.load.image('birdFlying_2', 'sprites/bevouliin-free-flying-bird-game-character-sprite-sheets/images/fly/frame-2.png');
+  this.load.image('birdHit_2', 'sprites/bevouliin-free-flying-bird-game-character-sprite-sheets/images/hit/frame-2.png');
   this.load.image('cloud_1', 'skies/synethic223_cloud_pack/Cloud_1.png');
   this.load.image('cloud_2', 'skies/synethic223_cloud_pack/Cloud_2.png');
   this.load.image('cloud_3', 'skies/synethic223_cloud_pack/Cloud_3.png');
@@ -77,9 +78,17 @@ function create ()
     repeat: -1
   });
 
+  this.anims.create({
+    key: 'dead',
+    frames: [
+      { key: 'birdHit_2', duration: 50 }
+    ],
+    frameRate: 8,
+    repeat: 2
+  })
+
   bird = this.physics.add.sprite(400, 300, 'birdFlying_1');
   bird.scale = 0.15;
-  bird.setCollideWorldBounds(true);
 
 }
 
@@ -92,6 +101,10 @@ function update ()
       //when clouds pass left boundary, then reset past right boundary up to 499 additional pixels to make some dynamic spacing between clouds.
       cloud.setPosition(Math.floor(Math.random() * 650) + config.width + 100, cloud.y);
     }
+  }
+  if(bird.getBottomCenter().y > config.height) {
+    bird.anims.play('dead',true);
+    this.physics.pause();
   }
 }
 

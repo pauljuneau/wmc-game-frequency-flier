@@ -121,7 +121,6 @@ function update ()
   }
   if(bird.getBottomCenter().y > config.height) {
     bird.anims.play('dead',true);
-    //this.physics.pause();
     pause = true;
   }
 }
@@ -174,8 +173,7 @@ var gameSetupPreferences = {
 
 
 function showGameSetupModal(event) {
-  //TODO replace this with proper game setup modal code
-  isDialogOpen = true;
+  isTheoryModalOpen = false;
   pause = true;
   gameSetupForm["musicPerformanceInfoRendered"].checked = gameSetupPreferences.musicPerformanceInfoRendered;
   gameSetupForm["keys"].value = gameSetupPreferences.key;
@@ -201,19 +199,9 @@ function showModal(dialog) {
   gameSetupPreferences.scaleType = gameSetupForm["scales"].value;
   musicConductor.chordProgressionType = gameSetupForm["chordProgressionTypes"].value;
   changeKeyAndScale(gameSetupPreferences.key, gameSetupPreferences.scaleType);
-  isDialogOpen = false;
-  resumePlay();
+  if(!isTheoryModalOpen)
+    pause = false;
 });
-
-
-//TODO fix issue where game resumes when opening theory modal
-function resumePlay() {
-    setTimeout(() => {
-      if(!isDialogOpen) {
-        pause = false;
-      }
-    }, 3000);
-}
 
 document.addEventListener(MidiInstrumentationEvents.MISC_EVENT, function handleMiscEvents(event) {
   if(event.value == 'showTheoryModalBtnClick') {
@@ -223,7 +211,8 @@ document.addEventListener(MidiInstrumentationEvents.MISC_EVENT, function handleM
 );
 
 function showTheoryModal() {
-  isDialogOpen = true; 
+  isTheoryModalOpen = true;
+  pause = true;
   var scaleStepSequenceTable = document.getElementById('scaleStepSequenceTable');
   scaleStepSequenceTable.innerHTML = '';
   scaleStepSequenceTable.append(generateTableRow(gameSetupPreferences.scaleType,scaleToHalfStepAlgorithm.get(gameSetupPreferences.scaleType)));
@@ -257,6 +246,5 @@ function generateTableRow(...elements) {
 
 function closeTheoryModal() {
   theoryModal.close();
-  isDialogOpen = false;
-  resumePlay();
+  pause = false;
 }

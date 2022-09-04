@@ -40,6 +40,7 @@ var cloud_3;
 var clouds;
 var gameCanvas;
 var pause = false;
+var musicalPerformanceText;
 
 //Phaser game implementation details for mandatory functions: preload(), create(), and update()
 var game = new Phaser.Game(config);
@@ -94,6 +95,7 @@ function create ()
   bird = this.physics.add.sprite(400, 300, 'birdFlying_1');
   bird.scale = 0.15;
 
+  musicalPerformanceText = this.add.text(16, 16, '', { fontSize: '18px', fill: '#000' });
 }
 
 function update ()
@@ -122,6 +124,10 @@ function update ()
   if(bird.getBottomCenter().y > config.height) {
     bird.anims.play('dead',true);
     pause = true;
+  }
+
+  if(gameSetupPreferences.musicPerformanceInfoRendered) {
+    musicalPerformanceText.setText(musicConductor.performanceString);
   }
 }
 
@@ -199,8 +205,9 @@ function showModal(dialog) {
   gameSetupPreferences.scaleType = gameSetupForm["scales"].value;
   musicConductor.chordProgressionType = gameSetupForm["chordProgressionTypes"].value;
   changeKeyAndScale(gameSetupPreferences.key, gameSetupPreferences.scaleType);
-  if(!isTheoryModalOpen)
+  if(!isTheoryModalOpen) {
     pause = false;
+  }
 });
 
 document.addEventListener(MidiInstrumentationEvents.MISC_EVENT, function handleMiscEvents(event) {

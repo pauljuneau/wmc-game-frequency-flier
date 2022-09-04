@@ -39,6 +39,7 @@ var cloud_2;
 var cloud_3;
 var clouds;
 var gameCanvas;
+var pause = false;
 
 //Phaser game implementation details for mandatory functions: preload(), create(), and update()
 var game = new Phaser.Game(config);
@@ -97,9 +98,15 @@ function create ()
 
 function update ()
 {
+  if(pause) {
+    this.physics.pause();
+  } else {
+    this.physics.resume();
+  }
   if(!gameCanvas) {
     gameCanvas = document.getElementsByTagName('canvas')[0];
     gameCanvas.addEventListener('click', (event) => {showGameSetupModal(event)});
+    gameCanvas.addEventListener('touchstart', (event) => {showGameSetupModal(event)});
   }
   bird.anims.play('fly',true);
   if(musicConductor.noteRecentlyPlayedInScale || musicConductor.chordProgressionsPlayedCount > 0) {
@@ -114,7 +121,8 @@ function update ()
   }
   if(bird.getBottomCenter().y > config.height) {
     bird.anims.play('dead',true);
-    this.physics.pause();
+    //this.physics.pause();
+    pause = true;
   }
 }
 
@@ -153,7 +161,102 @@ document.addEventListener(MidiInstrumentationEvents.NOTELASTPLAYED, function(e){
 });
 
 
+//GAME SETUP DIALOG
+var isDialogOpen = false;
+var theoryModal = document.getElementById('theoryModal');
+var gameSetupDialog = document.getElementById('gameSetupDialog');
+var gameSetupForm = document.forms["gameSetupForm"];
+var gameSetupPreferences = {
+    musicPerformanceInfoRendered : false,
+    key : 'C',
+    scaleType : 'major'
+};
+
+
 function showGameSetupModal(event) {
   //TODO replace this with proper game setup modal code
-  alert('hi!');
+  isDialogOpen = true;
+  pause = true;
+  gameSetupForm["musicPerformanceInfoRendered"].checked = gameSetupPreferences.musicPerformanceInfoRendered;
+  gameSetupForm["keys"].value = gameSetupPreferences.key;
+  showModal(gameSetupDialog);
+  return;
+}
+
+function showModal(dialog) {
+  if (typeof dialog.showModal === "function") {
+      dialog.showModal();
+  } else {
+      alert("The <dialog> API is not supported by this browser");
+  }
+}
+
+/**
+ * @description "Confirm" button of form triggers "close" on dialog because of [method="dialog"]
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog
+ */
+ gameSetupDialog.addEventListener('close', function onClose() {
+  gameSetupPreferences.musicPerformanceInfoRendered = gameSetupForm["musicPerformanceInfoRendered"].checked;
+  gameSetupPreferences.key = gameSetupForm["keys"].value;
+  gameSetupPreferences.scaleType = gameSetupForm["scales"].value;
+  musicConductor.chordProgressionType = gameSetupForm["chordProgressionTypes"].value;
+  changeKeyAndScale(gameSetupPreferences.key, gameSetupPreferences.scaleType);
+  isDialogOpen = false;
+  resumePlay();
+});
+
+
+//TODO fix issue where game resumes when opening theory modal
+function resumePlay() {
+    setTimeout(() => {
+      if(!isDialogOpen) {
+        pause = false;
+      }
+    }, 3000);
+}
+
+document.addEventListener(MidiInstrumentationEvents.MISC_EVENT, function handleMiscEvents(event) {
+  if(event.value == 'showTheoryModalBtnClick') {
+    showTheoryModal();
+  }
+}
+);
+
+function showTheoryModal() {
+  isDialogOpen = true; 
+  var scaleStepSequenceTable = document.getElementById('scaleStepSequenceTable');
+  scaleStepSequenceTable.innerHTML = '';
+  scaleStepSequenceTable.append(generateTableRow(gameSetupPreferences.scaleType,scaleToHalfStepAlgorithm.get(gameSetupPreferences.scaleType)));
+
+  var chordsStepCombinationsTable = document.getElementById('chordsStepCombinationsTable');
+  chordsStepCombinationsTable.innerHTML = '';
+  for(const [chordName, stepCombination] of stepCombinationByChordName) {
+      chordsStepCombinationsTable.append(generateTableRow(chordName,stepCombination));
+  }
+
+  var chordProgressionTable = document.getElementById('chordProgressionTable');
+  chordProgressionTable.innerHTML = '';
+  var chordProgressionMap = chordProgressionMapByType.get(musicConductor.chordProgressionType) ?? new Map();
+  for(const scaleDegreeChord of chordProgressionMap.keys() ) {
+      chordProgressionTable.append(generateTableRow(scaleDegreeChord, Array.from(chordProgressionMap.get(scaleDegreeChord)).join(', ')));
+  }
+  showModal(theoryModal);
+}
+
+function generateTableRow(...elements) {
+  var tr = document.createElement("tr");
+  for(const element of elements) {
+      var td = document.createElement("td");
+      var tdContent = document.createTextNode(element);
+      td.appendChild(tdContent);
+      tr.appendChild(td);
+  }
+  return tr;
+}
+
+
+function closeTheoryModal() {
+  theoryModal.close();
+  isDialogOpen = false;
+  resumePlay();
 }

@@ -11,6 +11,82 @@
     <link rel="shortcut icon" href="https://www.pauljuneauengineer.com/webmidi-conductor/webMidiConductor/favicon.ico" type="image/x-icon">
 </head>
 <body>
+    <dialog id="gameSetupDialog">
+        <form id="gameSetupForm" name="gameSetupForm" method="dialog" class="form-table-alignment">
+          <menu>
+            <button id="confirmBtn" value="default">Confirm</button>
+            <!--Need to dispatch event because showTheoryModal function in game.js has not yet been interpreted by the browser-->
+            <button id="showTheoryModalBtn" onclick="(new SessionCache()).set(MidiInstrumentationEvents.MISC_EVENT, 'showTheoryModalBtnClick')">Theory</button>
+          </menu>
+          <div class="form-input-row">
+            <label for="musicPerformanceInfoRendered">Display music performance info</label>
+            <input id="musicPerformanceInfoRendered" type="checkbox" name="musicPerformanceInfoRendered">
+          </div>
+          <div class="form-input-row">
+            <label for="key-select">Choose a key:</label>
+            <select name="keys" id="key-select">
+                <option value="C">C</option>
+                <option value="C#">C#/Db</option>
+                <option value="D">D</option>
+                <option value="D#">D#/Eb</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
+                <option value="F#">F#/Gb</option>
+                <option value="G">G</option>
+                <option value="G#">G#/Ab</option>
+                <option value="A">A</option>
+                <option value="A#">A#/Bb</option>
+                <option value="B">B</option>
+            </select>
+          </div>
+          <div class="form-input-row">
+            <label for="scale-select">Choose a scale:</label>
+            <select name="scales" id="scale-select">
+                <option value="major">major</option>
+                <option value="natural minor">natural minor</option>
+                <option value="melodic minor">melodic minor</option>
+                <option value="harmonic minor">harmonic minor</option>
+                <option value="minor pentatonic">minor pentatonic</option>
+                <option value="major pentatonic">major pentatonic</option>
+                <option value="major blues">major blues</option>
+                <option value="minor blues">minor blues</option>
+                <option value="major bebop">major bebop</option>
+                <option value="minor bebop">minor bebop</option>
+                <option value="ionian">ionian mode</option>
+                <option value="dorian">dorian mode</option>
+                <option value="phrygian">phrygian mode</option>
+                <option value="lydian">lydian mode</option>
+                <option value="mixolydian">mixolydian mode</option>
+                <option value="aeolian">aeolian mode</option>
+                <option value="locrian">locrian mode</option>
+            </select>
+          </div>
+          <div class="form-input-row">
+            <label for="chordProgressionType-select">Choose chord progression type:</label>
+            <select name="chordProgressionTypes" id="chordProgressionType-select">
+                <option value="Major">Major</option>
+                <option value="Minor">Minor</option>
+                <option value="Custom">Custom</option>
+            </select>
+          </div>
+        </form>
+      </dialog>
+      <dialog id="theoryModal">
+        <button id="closeTheoryModalBtn" onclick="closeTheoryModal()">close</button>
+        <br>
+        <br>
+        <table id="scaleStepSequenceTable">
+          Scale Sequence
+        </table>
+        <br>
+        <table id="chordsStepCombinationsTable">
+          Chord Step Combinations
+        </table>
+        <br>
+        <table id="chordProgressionTable">
+          Chord Progressions
+        </table>
+      </dialog>
     <div style="display:none;">
         <audio controls id="C4 (middle C)">
             <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448549__tedagame__c4.ogg" type="audio/ogg">

@@ -38,6 +38,7 @@ var cloud_1;
 var cloud_2;
 var cloud_3;
 var clouds;
+var gameCanvas;
 
 //Phaser game implementation details for mandatory functions: preload(), create(), and update()
 var game = new Phaser.Game(config);
@@ -96,6 +97,10 @@ function create ()
 
 function update ()
 {
+  if(!gameCanvas) {
+    gameCanvas = document.getElementsByTagName('canvas')[0];
+    gameCanvas.addEventListener('click', (event) => {showGameSetupModal(event)});
+  }
   bird.anims.play('fly',true);
   if(musicConductor.noteRecentlyPlayedInScale || musicConductor.chordProgressionsPlayedCount > 0) {
     bird.setVelocityY(-(config.physics.arcade.gravity.y * 0.04));
@@ -146,3 +151,9 @@ document.addEventListener(MidiInstrumentationEvents.NOTELASTPLAYED, function(e){
     }
   }
 });
+
+
+function showGameSetupModal(event) {
+  //TODO replace this with proper game setup modal code
+  alert('hi!');
+}

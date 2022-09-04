@@ -32,6 +32,9 @@ var config = {
 
 //Global game objects
 var bird;
+var cloud_1;
+var cloud_2;
+var cloud_3;
 
 //Phaser game implementation details for mandatory functions: preload(), create(), and update()
 var game = new Phaser.Game(config);
@@ -43,11 +46,24 @@ function preload ()
   this.load.image('sky', 'skies/phaser_labs_sky4.png');
   this.load.image('birdFlying_1','sprites/bevouliin-free-flying-bird-game-character-sprite-sheets/images/fly/frame-1.png');
   this.load.image('birdFlying_2', 'sprites/bevouliin-free-flying-bird-game-character-sprite-sheets/images/fly/frame-2.png');
+  this.load.image('cloud_1', 'skies/synethic223_cloud_pack/Cloud_1.png');
+  this.load.image('cloud_2', 'skies/synethic223_cloud_pack/Cloud_2.png');
+  this.load.image('cloud_3', 'skies/synethic223_cloud_pack/Cloud_3.png');
 }
 
 function create ()
 {
   this.add.image(400, 300, 'sky');
+
+  cloud_1 = this.physics.add.sprite(400,75,'cloud_1');
+  cloud_1.scale = 0.50;
+  cloud_1.setGravityY(-config.physics.arcade.gravity.y);
+  cloud_2 = this.physics.add.sprite(200,250,'cloud_2');
+  cloud_2.scale = 0.50;
+  cloud_2.setGravityY(-config.physics.arcade.gravity.y);
+  cloud_3 = this.physics.add.sprite(600,425,'cloud_3');
+  cloud_3.scale = 0.50;
+  cloud_3.setGravityY(-config.physics.arcade.gravity.y);
 
   this.anims.create({
     key: 'fly',
@@ -61,7 +77,6 @@ function create ()
 
   bird = this.physics.add.sprite(400, 300, 'birdFlying_1');
   bird.scale = 0.15;
-  bird.setBounce(0.2);
   bird.setCollideWorldBounds(true);
 
 }
@@ -69,8 +84,10 @@ function create ()
 function update ()
 {
   bird.anims.play('fly',true);
+  cloud_1.setVelocityX(-30);
+  cloud_2.setVelocityX(-30);
+  cloud_3.setVelocityX(-30);
 }
-
 
 //Player movement via midi input
 /** 

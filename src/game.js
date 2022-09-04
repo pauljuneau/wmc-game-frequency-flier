@@ -1,5 +1,7 @@
 //Switch on webmidi music conductor engine to interpret midi in real time
 switchOnOffMusicalPerformance(100);
+musicConductor.maxMillisWithoutNoteInScale = 2000;
+musicConductor.maxMillisNoChordProgCountReset = 2000;
 
 //Phaser game config
 var config = {
@@ -95,6 +97,9 @@ function create ()
 function update ()
 {
   bird.anims.play('fly',true);
+  if(musicConductor.noteRecentlyPlayedInScale || musicConductor.chordProgressionsPlayedCount > 0) {
+    bird.setVelocityY(-(config.physics.arcade.gravity.y * 0.04));
+  }
   for (var cloud of clouds) {
     cloud.setVelocityX(-30);
     if(cloud.getRightCenter().x < 0 ) {

@@ -19,7 +19,7 @@
             <button id="showTheoryModalBtn" onclick="(new SessionCache()).set(MidiInstrumentationEvents.MISC_EVENT, 'showTheoryModalBtnClick')">Theory</button>
           </menu>
           <div class="form-input-row">
-            <label for="musicPerformanceInfoRendered">Display music performance info</label>
+            <label for="musicPerformanceInfoRendered">Display music performance info:</label>
             <input id="musicPerformanceInfoRendered" type="checkbox" name="musicPerformanceInfoRendered">
           </div>
           <div class="form-input-row">
@@ -68,6 +68,14 @@
                 <option value="Minor">Minor</option>
                 <option value="Custom">Custom</option>
             </select>
+          </div>
+          <div class="form-input-row">
+            <label for="maxMillisWithoutNoteInScale">Max time (ms) allowed to have a note not played in the current scale:</label>
+            <input id="maxMillisWithoutNoteInScale" type="number" name="maxMillisWithoutNoteInScale" min="1" max="1000000">
+          </div>
+          <div class="form-input-row">
+            <label for="maxMillisNoChordProgCountReset">Max time (ms) allowed to have no chord progressions played:</label>
+            <input id="maxMillisNoChordProgCountReset" type="number" name="maxMillisNoChordProgCountReset" min="1" max="1000000">
           </div>
         </form>
       </dialog>

@@ -1,7 +1,5 @@
 //Switch on webmidi music conductor engine to interpret midi in real time
 switchOnOffMusicalPerformance(100);
-musicConductor.maxMillisWithoutNoteInScale = 2000;
-musicConductor.maxMillisNoChordProgCountReset = 2000;
 
 //Phaser game config
 var config = {
@@ -174,7 +172,9 @@ var gameSetupForm = document.forms["gameSetupForm"];
 var gameSetupPreferences = {
     musicPerformanceInfoRendered : false,
     key : 'C',
-    scaleType : 'major'
+    scaleType : 'major',
+    maxMillisWithoutNoteInScale : 1000,
+    maxMillisNoChordProgCountReset : 1000
 };
 
 
@@ -183,6 +183,8 @@ function showGameSetupModal(event) {
   pause = true;
   gameSetupForm["musicPerformanceInfoRendered"].checked = gameSetupPreferences.musicPerformanceInfoRendered;
   gameSetupForm["keys"].value = gameSetupPreferences.key;
+  gameSetupForm["maxMillisWithoutNoteInScale"].value = gameSetupPreferences.maxMillisWithoutNoteInScale;
+  gameSetupForm["maxMillisNoChordProgCountReset"].value = gameSetupPreferences.maxMillisNoChordProgCountReset;
   showModal(gameSetupDialog);
   return;
 }
@@ -205,6 +207,10 @@ function showModal(dialog) {
   gameSetupPreferences.scaleType = gameSetupForm["scales"].value;
   musicConductor.chordProgressionType = gameSetupForm["chordProgressionTypes"].value;
   changeKeyAndScale(gameSetupPreferences.key, gameSetupPreferences.scaleType);
+  gameSetupPreferences.maxMillisWithoutNoteInScale = gameSetupForm["maxMillisWithoutNoteInScale"].value;
+  musicConductor.maxMillisWithoutNoteInScale = gameSetupPreferences.maxMillisWithoutNoteInScale;
+  gameSetupPreferences.maxMillisNoChordProgCountReset = gameSetupForm["maxMillisNoChordProgCountReset"].value;
+  musicConductor.maxMillisNoChordProgCountReset = gameSetupPreferences.maxMillisNoChordProgCountReset;
   if(!isTheoryModalOpen) {
     pause = false;
   }

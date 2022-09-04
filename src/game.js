@@ -35,6 +35,7 @@ var bird;
 var cloud_1;
 var cloud_2;
 var cloud_3;
+var clouds;
 
 //Phaser game implementation details for mandatory functions: preload(), create(), and update()
 var game = new Phaser.Game(config);
@@ -64,6 +65,7 @@ function create ()
   cloud_3 = this.physics.add.sprite(600,425,'cloud_3');
   cloud_3.scale = 0.50;
   cloud_3.setGravityY(-config.physics.arcade.gravity.y);
+  clouds = [cloud_1, cloud_2, cloud_3];
 
   this.anims.create({
     key: 'fly',
@@ -84,9 +86,13 @@ function create ()
 function update ()
 {
   bird.anims.play('fly',true);
-  cloud_1.setVelocityX(-30);
-  cloud_2.setVelocityX(-30);
-  cloud_3.setVelocityX(-30);
+  for (var cloud of clouds) {
+    cloud.setVelocityX(-30);
+    if(cloud.getRightCenter().x < 0 ) {
+      console.log('here');
+      cloud.setPosition(900, cloud.y);
+    }
+  }
 }
 
 //Player movement via midi input

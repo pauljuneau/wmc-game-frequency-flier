@@ -98,7 +98,7 @@ function update ()
   for (var cloud of clouds) {
     cloud.setVelocityX(-30);
     if(cloud.getRightCenter().x < 0 ) {
-      //when clouds pass left boundary, then reset past right boundary up to 499 additional pixels to make some dynamic spacing between clouds.
+      //when cloud passes left boundary, then reset it some varying distance past right boundary to make some dynamic spacing between clouds.
       cloud.setPosition(Math.floor(Math.random() * 650) + config.width + 100, cloud.y);
     }
   }

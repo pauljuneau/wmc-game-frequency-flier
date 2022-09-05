@@ -35,6 +35,13 @@ var config = {
 };
 
 //Global game objects
+var gameSetupPreferences = {
+  musicPerformanceInfoRendered : false,
+  key : 'C',
+  scaleType : 'major',
+  maxMillisWithoutNoteInScale : 1000,
+  maxMillisNoChordProgCountReset : 1000
+};
 var bird;
 var cloud_1;
 var cloud_2;
@@ -97,7 +104,13 @@ function create ()
   bird = this.physics.add.sprite(400, 300, 'birdFlying_1');
   bird.scale = 0.15;
 
-  musicalPerformanceText = this.add.text(16, 16, '', { fontSize: '18px', fill: '#000' });
+  musicalPerformanceText = this.add.text(16, 16, '', { 
+    fontSize: '18px', 
+    color: '#000', 
+    fontStyle: 'strong', 
+    stroke: '#000', 
+    strokeThickness: 1
+  });
 }
 
 function update ()
@@ -134,7 +147,10 @@ function update ()
   }
 
   if(gameSetupPreferences.musicPerformanceInfoRendered) {
+    musicalPerformanceText.setVisible(true);
     musicalPerformanceText.setText(musicConductor.performanceString);
+  } else {
+    musicalPerformanceText.setVisible(false);
   }
 }
 
@@ -172,17 +188,9 @@ document.addEventListener(MidiInstrumentationEvents.NOTELASTPLAYED, function(e){
 
 
 //GAME SETUP DIALOG
-var isDialogOpen = false;
 var theoryModal = document.getElementById('theoryModal');
 var gameSetupDialog = document.getElementById('gameSetupDialog');
 var gameSetupForm = document.forms["gameSetupForm"];
-var gameSetupPreferences = {
-    musicPerformanceInfoRendered : false,
-    key : 'C',
-    scaleType : 'major',
-    maxMillisWithoutNoteInScale : 1000,
-    maxMillisNoChordProgCountReset : 1000
-};
 
 
 function showGameSetupModal(event) {

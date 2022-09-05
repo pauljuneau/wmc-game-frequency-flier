@@ -1,160 +1,164 @@
+<!-- 
+  Copyright © 2022 Paul Juneau All Rights Reserved.
+-->
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Frequency Flier - written with Phaser 3 and WMC</title>
-    <meta name="author" content="Paul Juneau">
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/pauljuneau/webmidi-conductor@2.5.1/webMidiConductor/midiChlorianController.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/pauljuneau/webmidi-conductor@2.5.1/webMidiConductor/musicConductorCtrl.js"></script>
-    <link rel="stylesheet" href="src/game.css" />
-    <link rel="shortcut icon" href="https://www.pauljuneauengineer.com/webmidi-conductor/webMidiConductor/favicon.ico" type="image/x-icon">
+  <meta charset="UTF-8">
+  <title>Frequency Flier</title>
+  <meta name="description" content="written with Phaser 3 and WMC">
+  <meta name="author" content="Paul Juneau">
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/pauljuneau/webmidi-conductor@2.5.1/webMidiConductor/midiChlorianController.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/pauljuneau/webmidi-conductor@2.5.1/webMidiConductor/musicConductorCtrl.js"></script>
+  <link rel="stylesheet" href="src/game.css" />
+  <link rel="shortcut icon" href="https://www.pauljuneauengineer.com/webmidi-conductor/webMidiConductor/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <dialog id="gameSetupDialog">
-        <form id="gameSetupForm" name="gameSetupForm" method="dialog" class="form-table-alignment">
-          <menu>
-            <button id="confirmBtn" value="default">Confirm</button>
-            <!--Need to dispatch event because showTheoryModal function in game.js has not yet been interpreted by the browser-->
-            <button id="showTheoryModalBtn" onclick="(new SessionCache()).set(MidiInstrumentationEvents.MISC_EVENT, 'showTheoryModalBtnClick')">Theory</button>
-          </menu>
-          <div class="form-input-row">
-            <label for="musicPerformanceInfoRendered">Display music performance info:</label>
-            <input id="musicPerformanceInfoRendered" type="checkbox" name="musicPerformanceInfoRendered">
-          </div>
-          <div class="form-input-row">
-            <label for="key-select">Choose a key:</label>
-            <select name="keys" id="key-select">
-                <option value="C">C</option>
-                <option value="C#">C#/Db</option>
-                <option value="D">D</option>
-                <option value="D#">D#/Eb</option>
-                <option value="E">E</option>
-                <option value="F">F</option>
-                <option value="F#">F#/Gb</option>
-                <option value="G">G</option>
-                <option value="G#">G#/Ab</option>
-                <option value="A">A</option>
-                <option value="A#">A#/Bb</option>
-                <option value="B">B</option>
-            </select>
-          </div>
-          <div class="form-input-row">
-            <label for="scale-select">Choose a scale:</label>
-            <select name="scales" id="scale-select">
-                <option value="major">major</option>
-                <option value="natural minor">natural minor</option>
-                <option value="melodic minor">melodic minor</option>
-                <option value="harmonic minor">harmonic minor</option>
-                <option value="minor pentatonic">minor pentatonic</option>
-                <option value="major pentatonic">major pentatonic</option>
-                <option value="major blues">major blues</option>
-                <option value="minor blues">minor blues</option>
-                <option value="major bebop">major bebop</option>
-                <option value="minor bebop">minor bebop</option>
-                <option value="ionian">ionian mode</option>
-                <option value="dorian">dorian mode</option>
-                <option value="phrygian">phrygian mode</option>
-                <option value="lydian">lydian mode</option>
-                <option value="mixolydian">mixolydian mode</option>
-                <option value="aeolian">aeolian mode</option>
-                <option value="locrian">locrian mode</option>
-            </select>
-          </div>
-          <div class="form-input-row">
-            <label for="chordProgressionType-select">Choose chord progression type:</label>
-            <select name="chordProgressionTypes" id="chordProgressionType-select">
-                <option value="Major">Major</option>
-                <option value="Minor">Minor</option>
-                <option value="Custom">Custom</option>
-            </select>
-          </div>
-          <div class="form-input-row">
-            <label for="maxMillisWithoutNoteInScale">Max time (ms) allowed to have a note not played in the current scale:</label>
-            <input id="maxMillisWithoutNoteInScale" type="number" name="maxMillisWithoutNoteInScale" min="1" max="1000000">
-          </div>
-          <div class="form-input-row">
-            <label for="maxMillisNoChordProgCountReset">Max time (ms) allowed to have no chord progressions played:</label>
-            <input id="maxMillisNoChordProgCountReset" type="number" name="maxMillisNoChordProgCountReset" min="1" max="1000000">
-          </div>
-        </form>
-        <a href="https://www.buymeacoffee.com/classicantique" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
-      </dialog>
-      <dialog id="theoryModal">
-        <button id="closeTheoryModalBtn" onclick="closeTheoryModal()">close</button>
-        <br>
-        <br>
-        <table id="scaleStepSequenceTable">
-          Scale Sequence
-        </table>
-        <br>
-        <table id="chordsStepCombinationsTable">
-          Chord Step Combinations
-        </table>
-        <br>
-        <table id="chordProgressionTable">
-          Chord Progressions
-        </table>
-      </dialog>
-    <div style="display:none;">
-        <audio controls id="C4 (middle C)">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448549__tedagame__c4.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="C#4/Db4">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448539__tedagame__c-4.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="D4">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448609__tedagame__d4.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="D#4/Eb4">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448602__tedagame__d-4.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="E4">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448613__tedagame__e4.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="F4">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448595__tedagame__f4.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="F#4/Gb4">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448585__tedagame__f-4.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="G4">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448552__tedagame__g4.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="G#4/Ab4">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448592__tedagame__g-4.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="A4 concert pitch">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448561__tedagame__a4.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="A#4/Bb4">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448577__tedagame__a-4.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="B4">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448536__tedagame__b4.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="C5">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448548__tedagame__c5.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="C#5/Db5">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448532__tedagame__c-5.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="D5">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448619__tedagame__d5.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="D#5/Eb5">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448603__tedagame__d-5.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="E5">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448612__tedagame__e5.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="F5">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448594__tedagame__f5.ogg" type="audio/ogg">
-        </audio>
-        <audio controls id="F#5/Gb5">
-            <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448582__tedagame__f-5.ogg" type="audio/ogg">
-        </audio>
-    </div>
-    <script type="text/javascript" src="src/game.js"></script>
+  <dialog id="gameSetupDialog">
+    <form id="gameSetupForm" name="gameSetupForm" method="dialog" class="form-table-alignment">
+      <menu>
+        <button id="confirmBtn" value="default">Confirm</button>
+        <!--Need to dispatch event because showTheoryModal function in game.js has not yet been interpreted by the browser-->
+        <button id="showTheoryModalBtn" onclick="(new SessionCache()).set(MidiInstrumentationEvents.MISC_EVENT, 'showTheoryModalBtnClick')">Theory</button>
+      </menu>
+      <div class="form-input-row">
+        <label for="musicPerformanceInfoRendered">Display music performance info:</label>
+        <input id="musicPerformanceInfoRendered" type="checkbox" name="musicPerformanceInfoRendered">
+      </div>
+      <div class="form-input-row">
+        <label for="key-select">Choose a key:</label>
+        <select name="keys" id="key-select">
+            <option value="C">C</option>
+            <option value="C#">C#/Db</option>
+            <option value="D">D</option>
+            <option value="D#">D#/Eb</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="F#">F#/Gb</option>
+            <option value="G">G</option>
+            <option value="G#">G#/Ab</option>
+            <option value="A">A</option>
+            <option value="A#">A#/Bb</option>
+            <option value="B">B</option>
+        </select>
+      </div>
+      <div class="form-input-row">
+        <label for="scale-select">Choose a scale:</label>
+        <select name="scales" id="scale-select">
+            <option value="major">major</option>
+            <option value="natural minor">natural minor</option>
+            <option value="melodic minor">melodic minor</option>
+            <option value="harmonic minor">harmonic minor</option>
+            <option value="minor pentatonic">minor pentatonic</option>
+            <option value="major pentatonic">major pentatonic</option>
+            <option value="major blues">major blues</option>
+            <option value="minor blues">minor blues</option>
+            <option value="major bebop">major bebop</option>
+            <option value="minor bebop">minor bebop</option>
+            <option value="ionian">ionian mode</option>
+            <option value="dorian">dorian mode</option>
+            <option value="phrygian">phrygian mode</option>
+            <option value="lydian">lydian mode</option>
+            <option value="mixolydian">mixolydian mode</option>
+            <option value="aeolian">aeolian mode</option>
+            <option value="locrian">locrian mode</option>
+        </select>
+      </div>
+      <div class="form-input-row">
+        <label for="chordProgressionType-select">Choose chord progression type:</label>
+        <select name="chordProgressionTypes" id="chordProgressionType-select">
+            <option value="Major">Major</option>
+            <option value="Minor">Minor</option>
+            <option value="Custom">Custom</option>
+        </select>
+      </div>
+      <div class="form-input-row">
+        <label for="maxMillisWithoutNoteInScale">Max time (ms) allowed to have a note not played in the current scale:</label>
+        <input id="maxMillisWithoutNoteInScale" type="number" name="maxMillisWithoutNoteInScale" min="1" max="1000000">
+      </div>
+      <div class="form-input-row">
+        <label for="maxMillisNoChordProgCountReset">Max time (ms) allowed to have no chord progressions played:</label>
+        <input id="maxMillisNoChordProgCountReset" type="number" name="maxMillisNoChordProgCountReset" min="1" max="1000000">
+      </div>
+    </form>
+    <a href="https://www.buymeacoffee.com/classicantique" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+  </dialog>
+  <dialog id="theoryModal">
+    <button id="closeTheoryModalBtn" onclick="closeTheoryModal()">close</button>
+    <br>
+    <br>
+    <table id="scaleStepSequenceTable">
+      Scale Sequence
+    </table>
+    <br>
+    <table id="chordsStepCombinationsTable">
+      Chord Step Combinations
+    </table>
+    <br>
+    <table id="chordProgressionTable">
+      Chord Progressions
+    </table>
+  </dialog>
+  <div style="display:none;">
+    <audio controls id="C4 (middle C)">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448549__tedagame__c4.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="C#4/Db4">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448539__tedagame__c-4.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="D4">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448609__tedagame__d4.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="D#4/Eb4">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448602__tedagame__d-4.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="E4">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448613__tedagame__e4.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="F4">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448595__tedagame__f4.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="F#4/Gb4">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448585__tedagame__f-4.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="G4">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448552__tedagame__g4.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="G#4/Ab4">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448592__tedagame__g-4.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="A4 concert pitch">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448561__tedagame__a4.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="A#4/Bb4">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448577__tedagame__a-4.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="B4">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448536__tedagame__b4.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="C5">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448548__tedagame__c5.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="C#5/Db5">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448532__tedagame__c-5.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="D5">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448619__tedagame__d5.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="D#5/Eb5">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448603__tedagame__d-5.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="E5">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448612__tedagame__e5.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="F5">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448594__tedagame__f5.ogg" type="audio/ogg">
+    </audio>
+    <audio controls id="F#5/Gb5">
+        <source src="https://www.pauljuneauengineer.com/game-assets/soundEffects/piano_tedagame/448582__tedagame__f-5.ogg" type="audio/ogg">
+    </audio>
+  </div>
+  <script type="text/javascript" src="src/game.js"></script>
 </body>
 </html>

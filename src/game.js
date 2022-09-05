@@ -1,3 +1,7 @@
+/** 
+    Copyright © 2022 Paul Juneau All Rights Reserved.
+**/
+
 //Switch on webmidi music conductor engine to interpret midi in real time
 switchOnOffMusicalPerformance(100);
 

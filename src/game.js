@@ -119,6 +119,11 @@ function update ()
       cloud.setPosition(Math.floor(Math.random() * 650) + config.width + 100, cloud.y);
     }
   }
+
+  if(bird.getTopCenter().y < 0 ) {
+    bird.setPosition(bird.x, -1*(bird.getTopCenter().y - bird.getCenter().y));
+  }
+
   if(bird.getBottomCenter().y > config.height) {
     bird.anims.play('dead',true);
     pause = true;

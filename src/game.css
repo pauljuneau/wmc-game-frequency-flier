@@ -1,4 +1,29 @@
+/** 
+  Copyright © 2022 Paul Juneau All Rights Reserved.
+**/
+
 canvas {
   align-items: center;
   margin: auto;
+}
+
+form.form-table-alignment {
+  display: table;
+}
+
+div.form-input-row {
+    display: table-row;
+}
+
+label, input, select {
+    display: table-cell;
+    margin-bottom: 10px;
+}
+
+label {
+    padding-right: 10px;
+}
+
+table, th, td {
+  border: 1px solid black;
 }

@@ -138,11 +138,9 @@ function update ()
   }
 }
 
-//Player movement via midi input
 /** 
  * @description listens to midi-chlorian controller event which are events based on 
  * midi notes currently playing.
- * - moves player left or right if the player went up or down the register; respectively. 
  * @listens MidiInstrumentationEvents.MIDICHLORIANCTRLEVENT - published from
  *  midiChlorianController.js' MidiInstrumentationEvents.NOTEBEINGPLAYED event listener.
  * @param e.value - stringified midiChlorianCtrlr 

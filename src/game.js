@@ -40,7 +40,8 @@ var gameSetupPreferences = {
   key : 'C',
   scaleType : 'major',
   maxMillisWithoutNoteInScale : 1000,
-  maxMillisNoChordProgCountReset : 1000
+  maxMillisNoChordProgCountReset : 1000,
+  musicPerformanceTextSizeScale : 1
 };
 var bird;
 var cloud_1;
@@ -113,7 +114,6 @@ function create ()
   });
 }
 
-var performanceTextSizeScale = 1;
 function update ()
 {
   if(pause) {
@@ -154,7 +154,7 @@ function update ()
     musicalPerformanceText.setVisible(false);
   }
 
-  musicalPerformanceText.setScale(performanceTextSizeScale);
+  musicalPerformanceText.setScale(gameSetupPreferences.musicPerformanceTextSizeScale);
 
 }
 
@@ -201,6 +201,7 @@ function showGameSetupModal(event) {
   isTheoryModalOpen = false;
   pause = true;
   gameSetupForm["musicPerformanceInfoRendered"].checked = gameSetupPreferences.musicPerformanceInfoRendered;
+  gameSetupForm["musicPerformanceTextSizeScale"].value = gameSetupPreferences.musicPerformanceTextSizeScale;
   gameSetupForm["keys"].value = gameSetupPreferences.key;
   gameSetupForm["maxMillisWithoutNoteInScale"].value = gameSetupPreferences.maxMillisWithoutNoteInScale;
   gameSetupForm["maxMillisNoChordProgCountReset"].value = gameSetupPreferences.maxMillisNoChordProgCountReset;
@@ -222,6 +223,7 @@ function showModal(dialog) {
  */
  gameSetupDialog.addEventListener('close', function onClose() {
   gameSetupPreferences.musicPerformanceInfoRendered = gameSetupForm["musicPerformanceInfoRendered"].checked;
+  gameSetupPreferences.musicPerformanceTextSizeScale = gameSetupForm["musicPerformanceTextSizeScale"].value;
   gameSetupPreferences.key = gameSetupForm["keys"].value;
   gameSetupPreferences.scaleType = gameSetupForm["scales"].value;
   musicConductor.chordProgressionType = gameSetupForm["chordProgressionTypes"].value;

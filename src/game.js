@@ -201,7 +201,11 @@ function showGameSetupModal(event) {
   isTheoryModalOpen = false;
   pause = true;
   gameSetupForm["musicPerformanceInfoRendered"].checked = gameSetupPreferences.musicPerformanceInfoRendered;
-  gameSetupForm["musicPerformanceTextSizeScale"].value = gameSetupPreferences.musicPerformanceTextSizeScale;
+  if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+    gameSetupForm["musicPerformanceTextSizeScale"].defaultValue = "2.5";
+  } else {
+    gameSetupForm["musicPerformanceTextSizeScale"].defaultValue = gameSetupPreferences.musicPerformanceTextSizeScale;
+  }
   gameSetupForm["keys"].value = gameSetupPreferences.key;
   gameSetupForm["maxMillisWithoutNoteInScale"].value = gameSetupPreferences.maxMillisWithoutNoteInScale;
   gameSetupForm["maxMillisNoChordProgCountReset"].value = gameSetupPreferences.maxMillisNoChordProgCountReset;

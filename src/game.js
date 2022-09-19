@@ -113,6 +113,7 @@ function create ()
   });
 }
 
+var performanceTextSizeScale = 1;
 function update ()
 {
   if(pause) {
@@ -152,6 +153,9 @@ function update ()
   } else {
     musicalPerformanceText.setVisible(false);
   }
+
+  musicalPerformanceText.setScale(performanceTextSizeScale);
+
 }
 
 /** 

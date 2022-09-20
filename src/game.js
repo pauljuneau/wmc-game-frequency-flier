@@ -167,6 +167,7 @@ function update ()
     
     setTimeout(() => {
       alert('Max Chord Progression Count Achieved: ' + maxChordProgressionCount);
+      maxChordProgressionCount = 0;
       bird.setPosition(config.width/2,config.height/2);
       pause = false;
       gameOver = false;

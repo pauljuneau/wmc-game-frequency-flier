@@ -39,10 +39,21 @@ var gameSetupPreferences = {
   musicPerformanceInfoRendered : false,
   key : 'C',
   scaleType : 'major',
-  maxMillisWithoutNoteInScale : 1000,
+  maxMillisWithoutNoteInScale : 500,
   maxMillisNoChordProgCountReset : 1000,
   musicPerformanceTextSizeScale : 1
 };
+var gameState = new Object();
+var gameState = Object.create(gameSetupPreferences);  
+gameState.hasChanged = function(gameSetupPreferences, propertyName) {
+  if(this[propertyName] != gameSetupPreferences[propertyName]) {
+    this[propertyName] = gameSetupPreferences[propertyName];
+    return true;
+  } 
+  return false;
+}
+var gameOver = false;
+var maxChordProgressionCount = 0;
 var bird;
 var cloud_1;
 var cloud_2;
@@ -102,7 +113,7 @@ function create ()
     repeat: 2
   })
 
-  bird = this.physics.add.sprite(400, 300, 'birdFlying_1');
+  bird = this.physics.add.sprite(config.width/2,config.height/2,'birdFlying_1');
   bird.scale = 0.15;
 
   musicalPerformanceText = this.add.text(16, 16, '', { 
@@ -121,15 +132,22 @@ function update ()
   } else {
     this.physics.resume();
   }
+
   if(!gameCanvas) {
     gameCanvas = document.getElementsByTagName('canvas')[0];
     gameCanvas.addEventListener('click', (event) => {showGameSetupModal(event)});
     gameCanvas.addEventListener('touchstart', (event) => {showGameSetupModal(event)});
   }
+
   bird.anims.play('fly',true);
   if(musicConductor.noteRecentlyPlayedInScale || musicConductor.chordProgressionsPlayedCount > 0) {
     bird.setVelocityY(-(config.physics.arcade.gravity.y * 0.04));
   }
+
+  if(maxChordProgressionCount < musicConductor.chordProgressionsPlayedCount) {
+    maxChordProgressionCount = musicConductor.chordProgressionsPlayedCount;
+  }
+
   for (var cloud of clouds) {
     cloud.setVelocityX(-30);
     if(cloud.getRightCenter().x < 0 ) {
@@ -142,9 +160,20 @@ function update ()
     bird.setPosition(bird.x, -1*(bird.getTopCenter().y - bird.getCenter().y));
   }
 
-  if(bird.getBottomCenter().y > config.height) {
-    bird.anims.play('dead',true);
+  if(bird.getBottomCenter().y > config.height && gameOver == false) {
     pause = true;
+    //Let player know highest chord progression count reached and then reset game
+    gameOver = true;
+    
+    setTimeout(() => {
+      alert('Max Chord Progression Count Achieved: ' + maxChordProgressionCount);
+      bird.setPosition(config.width/2,config.height/2);
+      pause = false;
+      gameOver = false;
+    }, '1000');
+  }
+  if(gameOver) {
+    bird.anims.play('dead',true);
   }
 
   if(gameSetupPreferences.musicPerformanceInfoRendered) {
@@ -154,8 +183,9 @@ function update ()
     musicalPerformanceText.setVisible(false);
   }
 
-  musicalPerformanceText.setScale(gameSetupPreferences.musicPerformanceTextSizeScale);
-
+  if(gameState.hasChanged(gameSetupPreferences, 'musicPerformanceTextSizeScale')) {
+    musicalPerformanceText.setScale(gameSetupPreferences.musicPerformanceTextSizeScale);
+  }
 }
 
 /** 

@@ -44,10 +44,13 @@ var gameSetupPreferences = {
   musicPerformanceTextSizeScale : 1
 };
 var gameState = new Object();
-var gameState = Object.create(gameSetupPreferences);  
-gameState.hasChanged = function(gameSetupPreferences, propertyName) {
-  if(this[propertyName] != gameSetupPreferences[propertyName]) {
-    this[propertyName] = gameSetupPreferences[propertyName];
+//Initialize gameState to match gameSetupPreferences
+for (const property in gameSetupPreferences) {
+  gameState[property] = gameSetupPreferences[property];
+}
+gameState.hasChanged = function(that, propertyName) {
+  if(this[propertyName] != that[propertyName]) {
+    this[propertyName] = that[propertyName];
     return true;
   } 
   return false;
@@ -169,7 +172,7 @@ function update ()
       alert('Max Chord Progression Count Achieved: ' + maxChordProgressionCount);
       maxChordProgressionCount = 0;
       bird.setPosition(config.width/2,config.height/2);
-      pause = false;
+      showGameSetupModal();
       gameOver = false;
     }, '1000');
   }

@@ -41,7 +41,8 @@ var gameSetupPreferences = {
   scaleType : 'major',
   maxMillisWithoutNoteInScale : 500,
   maxMillisNoChordProgCountReset : 1000,
-  musicPerformanceTextSizeScale : 1
+  musicPerformanceTextSizeScale : 1,
+  neverDieMode : false
 };
 var gameState = new Object();
 //Initialize gameState to match gameSetupPreferences
@@ -235,6 +236,7 @@ function showGameSetupModal(event) {
   isTheoryModalOpen = false;
   pause = true;
   gameSetupForm["musicPerformanceInfoRendered"].checked = gameSetupPreferences.musicPerformanceInfoRendered;
+  gameSetupForm["neverDieMode"].checked = gameSetupPreferences.neverDieMode;
   if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
     gameSetupForm["musicPerformanceTextSizeScale"].defaultValue = "2.5";
   } else {
@@ -261,6 +263,7 @@ function showModal(dialog) {
  */
  gameSetupDialog.addEventListener('close', function onClose() {
   gameSetupPreferences.musicPerformanceInfoRendered = gameSetupForm["musicPerformanceInfoRendered"].checked;
+  gameSetupPreferences.neverDieMode = gameSetupForm["neverDieMode"].checked;
   gameSetupPreferences.musicPerformanceTextSizeScale = gameSetupForm["musicPerformanceTextSizeScale"].value;
   gameSetupPreferences.key = gameSetupForm["keys"].value;
   gameSetupPreferences.scaleType = gameSetupForm["scales"].value;

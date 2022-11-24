@@ -321,8 +321,22 @@ function generateTableRow(...elements) {
   return tr;
 }
 
-
 function closeTheoryModal() {
   theoryModal.close();
   pause = false;
+}
+
+function filterRows(filter, tableId, checkboxId) {
+  var isChecked = document.getElementById(checkboxId).checked;
+  var table = document.getElementById(tableId);
+  var tr = table.getElementsByTagName("tr");
+  for (let i = 0; i < tr.length; i++) {
+    var td = tr[i].getElementsByTagName("td")[0];
+    if(td) {
+      var txtValue = td.textContent || td.innerText;
+      if(txtValue.toLowerCase().includes(filter)) {
+        tr[i].style.display = isChecked ? "" : "none";
+      }
+    }
+  }
 }

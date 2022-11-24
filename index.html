@@ -101,11 +101,15 @@
     </table>
     <br>
     <table id="chordsStepCombinationsTable">
-      Chord Step Combinations
+      Chord Step Combinations <br>
+      <input id="triadsOnly_chordsStepCombinations" type="checkbox" name="triadsOnly_chordsStepCombinations" checked onclick="filterRows('triad','chordsStepCombinationsTable','triadsOnly_chordsStepCombinations')"> Triads 
+      <input id="7thsOnly_chordsStepCombinations" type="checkbox" name="7thsOnly_chordsStepCombinations" checked onclick="filterRows('7th','chordsStepCombinationsTable','7thsOnly_chordsStepCombinations')"> 7ths
     </table>
     <br>
     <table id="chordProgressionTable">
-      Chord Progressions
+      Chord Progressions <br>
+      <input id="triadsOnly_chordProgressions" type="checkbox" name="triadsOnly_chordProgressions" checked onclick="filterRows('triad','chordProgressionTable','triadsOnly_chordProgressions')"> Triads 
+      <input id="7thsOnly_chordProgressions" type="checkbox" name="7thsOnly_chordProgressions" checked onclick="filterRows('7th','chordProgressionTable','7thsOnly_chordProgressions')"> 7ths
     </table>
   </dialog>
   <div style="display:none;">

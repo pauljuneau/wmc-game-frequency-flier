@@ -163,6 +163,9 @@ function update ()
   if(bird.getTopCenter().y < 0 ) {
     bird.setPosition(bird.x, -1*(bird.getTopCenter().y - bird.getCenter().y));
   }
+  if(gameSetupPreferences.neverDieMode && bird.getBottomCenter().y > (config.height-bird.displayHeight)) {
+    bird.setPosition(bird.x,  (config.height-2*bird.displayHeight));
+  }
 
   if(bird.getBottomCenter().y > config.height && gameOver == false) {
     pause = true;

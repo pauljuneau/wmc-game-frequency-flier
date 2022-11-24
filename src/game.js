@@ -295,13 +295,18 @@ function showTheoryModal() {
   scaleStepSequenceTable.innerHTML = '';
   scaleStepSequenceTable.append(generateTableRow(gameSetupPreferences.scaleType,scaleToHalfStepAlgorithm.get(gameSetupPreferences.scaleType)));
 
+  //TODO only load table if table has not been drawn yet so that it can retain filter settings when closed and reopened
   var chordsStepCombinationsTable = document.getElementById('chordsStepCombinationsTable');
+  document.getElementById('triadsOnly_chordsStepCombinations').checked = true;
+  document.getElementById('7thsOnly_chordsStepCombinations').checked = true;
   chordsStepCombinationsTable.innerHTML = '';
   for(const [chordName, stepCombination] of stepCombinationByChordName) {
       chordsStepCombinationsTable.append(generateTableRow(chordName,stepCombination));
   }
-
+  //TODO only load table if table has not been drawn yet or when chordProgressionType changes so that it can retain filter settings when closed and reopened
   var chordProgressionTable = document.getElementById('chordProgressionTable');
+  document.getElementById('triadsOnly_chordProgressions').checked = true;
+  document.getElementById('7thsOnly_chordProgressions').checked = true;
   chordProgressionTable.innerHTML = '';
   var chordProgressionMap = chordProgressionMapByType.get(musicConductor.chordProgressionType) ?? new Map();
   for(const scaleDegreeChord of chordProgressionMap.keys() ) {

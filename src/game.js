@@ -66,6 +66,7 @@ var clouds;
 var gameCanvas;
 var pause = false;
 var musicalPerformanceText;
+var tints = [0xFF0000,0xFFA500,0xFFFF00,0x008000,0x0000FF,0x4B0082,0xEE82EE]; //ROYGBIV
 
 //Phaser game implementation details for mandatory functions: preload(), create(), and update()
 var game = new Phaser.Game(config);
@@ -226,6 +227,11 @@ document.addEventListener(MidiInstrumentationEvents.NOTELASTPLAYED, function(e){
       console.error(e.name + ': '+e.message);
     }
   }
+});
+
+document.addEventListener(MidiInstrumentationEvents.CHORDINSCALEPLAYED, function(e){
+  const scaleDegreeChord = JSON.parse(e.value);
+  console.log(scaleDegreeChord);
 });
 
 

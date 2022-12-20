@@ -3,7 +3,8 @@
 **/
 
 //Switch on webmidi music conductor engine to interpret midi in real time
-switchOnOffMusicalPerformance(100);
+const MUSIC_PERFORMANCE_RATE = 100;
+switchOnOffMusicalPerformance(MUSIC_PERFORMANCE_RATE);
 
 //Phaser game config
 var config = {
@@ -66,6 +67,7 @@ var clouds;
 var gameCanvas;
 var pause = false;
 var musicalPerformanceText;
+var tints = [0xFF0000,0xFFA500,0xFFFF00,0x008000,0x0000FF,0x4B0082,0xEE82EE]; //ROYGBIV
 
 //Phaser game implementation details for mandatory functions: preload(), create(), and update()
 var game = new Phaser.Game(config);
@@ -196,6 +198,7 @@ function update ()
   }
 }
 
+var lastMidiChlorianCtrlEvent;
 /** 
  * @description listens to midi-chlorian controller event which are events based on 
  * midi notes currently playing.
@@ -214,6 +217,7 @@ function update ()
         console.error(e.name + ': '+e.message);
     }
   }
+  lastMidiChlorianCtrlEvent = oneMidiChlorianCtrlrEvent;
 });
 
 //Stop piano sound being played when no longer playing using computer keyboard
@@ -228,6 +232,25 @@ document.addEventListener(MidiInstrumentationEvents.NOTELASTPLAYED, function(e){
   }
 });
 
+var lastTintIndex;
+document.addEventListener(MidiInstrumentationEvents.CHORDINSCALEPLAYED, function(e){
+  const scaleDegreeChordObj = JSON.parse(e.value);
+  var scaleDegreeChord = (lastMidiChlorianCtrlEvent == undefined || lastMidiChlorianCtrlEvent.countIncreased || (lastMidiChlorianCtrlEvent.countIncreased == false && lastMidiChlorianCtrlEvent.countDecreased == false)) ? scaleDegreeChordObj.scaleDegreeChordPlayedASC : scaleDegreeChordObj.scaleDegreeChordPlayedDESC;
+  var tintIndex = parseInt(scaleDegreeChord.split(' ')[0]) - 1; 
+  bird.setTint(tints[tintIndex]);
+  clearTint(tintIndex);
+  lastTintIndex = tintIndex;
+});
+
+
+function clearTint(tintIndex) {
+  if(tintIndex != lastTintIndex ) {
+    setTimeout(() => {
+      bird.clearTint();
+      lastTintIndex = undefined;
+    }, 1000);
+  }
+}
 
 //GAME SETUP DIALOG
 var theoryModal = document.getElementById('theoryModal');

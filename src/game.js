@@ -3,7 +3,8 @@
 **/
 
 //Switch on webmidi music conductor engine to interpret midi in real time
-switchOnOffMusicalPerformance(100);
+const MUSIC_PERFORMANCE_RATE = 100;
+switchOnOffMusicalPerformance(MUSIC_PERFORMANCE_RATE);
 
 //Phaser game config
 var config = {
@@ -197,6 +198,7 @@ function update ()
   }
 }
 
+var lastMidiChlorianCtrlEvent;
 /** 
  * @description listens to midi-chlorian controller event which are events based on 
  * midi notes currently playing.
@@ -215,6 +217,7 @@ function update ()
         console.error(e.name + ': '+e.message);
     }
   }
+  lastMidiChlorianCtrlEvent = oneMidiChlorianCtrlrEvent;
 });
 
 //Stop piano sound being played when no longer playing using computer keyboard
@@ -229,11 +232,25 @@ document.addEventListener(MidiInstrumentationEvents.NOTELASTPLAYED, function(e){
   }
 });
 
+var lastTintIndex;
 document.addEventListener(MidiInstrumentationEvents.CHORDINSCALEPLAYED, function(e){
-  const scaleDegreeChord = JSON.parse(e.value);
-  console.log(scaleDegreeChord);
+  const scaleDegreeChordObj = JSON.parse(e.value);
+  var scaleDegreeChord = (lastMidiChlorianCtrlEvent == undefined || lastMidiChlorianCtrlEvent.countIncreased || (lastMidiChlorianCtrlEvent.countIncreased == false && lastMidiChlorianCtrlEvent.countDecreased == false)) ? scaleDegreeChordObj.scaleDegreeChordPlayedASC : scaleDegreeChordObj.scaleDegreeChordPlayedDESC;
+  var tintIndex = parseInt(scaleDegreeChord.split(' ')[0]) - 1; 
+  bird.setTint(tints[tintIndex]);
+  clearTint(tintIndex);
+  lastTintIndex = tintIndex;
 });
 
+
+function clearTint(tintIndex) {
+  if(tintIndex != lastTintIndex ) {
+    setTimeout(() => {
+      bird.clearTint();
+      lastTintIndex = undefined;
+    }, 1000);
+  }
+}
 
 //GAME SETUP DIALOG
 var theoryModal = document.getElementById('theoryModal');

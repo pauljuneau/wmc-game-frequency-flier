@@ -68,6 +68,12 @@ var gameCanvas;
 var pause = false;
 var musicalPerformanceText;
 var tints = [0xFF0000,0xFFA500,0xFFFF00,0x008000,0x0000FF,0x4B0082,0xEE82EE]; //ROYGBIV
+var tintsAsHexStrings = [];
+for(var i =0; i<tints.length; i++) {
+  var hexStr = tints[i].toString(16);
+  while(hexStr.length < 6) hexStr = '0' +hexStr;
+  tintsAsHexStrings[i] = hexStr;
+}
 
 //Phaser game implementation details for mandatory functions: preload(), create(), and update()
 var game = new Phaser.Game(config);
@@ -236,9 +242,22 @@ var lastTintIndex;
 document.addEventListener(MidiInstrumentationEvents.CHORDINSCALEPLAYED, function(e){
   const scaleDegreeChordObj = JSON.parse(e.value);
   var scaleDegreeChord = (lastMidiChlorianCtrlEvent == undefined || lastMidiChlorianCtrlEvent.countIncreased || (lastMidiChlorianCtrlEvent.countIncreased == false && lastMidiChlorianCtrlEvent.countDecreased == false)) ? scaleDegreeChordObj.scaleDegreeChordPlayedASC : scaleDegreeChordObj.scaleDegreeChordPlayedDESC;
-  var tintIndex = parseInt(scaleDegreeChord.split(' ')[0]) - 1; 
+  var tintIndex = parseInt(scaleDegreeChord.split(' ')[0]) - 1;
+  //tint bird 
   bird.setTint(tints[tintIndex]);
-  clearTint(tintIndex);
+  //color first column in matching chordProgressionTable row
+  if(isTheoryModalOpen) {
+    var chordProgressionTable = document.getElementById("chordProgressionTable");
+    for(var i=0; i < chordProgressionTable.rows.length; i++) {
+      //assuming 1st cell is populated with scale degree chord name
+      var col1 = chordProgressionTable.rows[i].cells[0]; 
+      if(col1.innerText == scaleDegreeChord) {
+        col1.style.backgroundColor = '#'+tintsAsHexStrings[tintIndex];
+        break;
+      }
+    }
+  }
+  clearTint(tintIndex);  
   lastTintIndex = tintIndex;
 });
 
@@ -247,6 +266,10 @@ function clearTint(tintIndex) {
   if(tintIndex != lastTintIndex ) {
     setTimeout(() => {
       bird.clearTint();
+      var chordProgressionTable = document.getElementById("chordProgressionTable");
+      for(var i=0; i < chordProgressionTable.rows.length; i++) {
+        chordProgressionTable.rows[i].cells[0].style.backgroundColor ='';
+      }
       lastTintIndex = undefined;
     }, 1000);
   }
@@ -315,6 +338,7 @@ function updateSettings() {
   }
 }
 
+var isTheoryModalOpen = false;
 function showTheoryModal() {
   isTheoryModalOpen = true;
   pause = true;
@@ -356,6 +380,7 @@ function generateTableRow(...elements) {
 
 function closeTheoryModal() {
   theoryModal.close();
+  isTheoryModalOpen = false;
   pause = false;
 }
 

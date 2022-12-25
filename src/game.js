@@ -287,7 +287,18 @@ function showModal(dialog) {
  * @description "Confirm" button of form triggers "close" on dialog because of [method="dialog"]
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog
  */
- gameSetupDialog.addEventListener('close', function onClose() {
+gameSetupDialog.addEventListener('close', function onClose() {
+  updateSettings();
+});
+
+document.addEventListener(MidiInstrumentationEvents.MISC_EVENT, function handleMiscEvents(event) {
+  if(event.value == 'showTheoryModalBtnClick') {
+    showTheoryModal();
+  }
+}
+);
+
+function updateSettings() {
   gameSetupPreferences.musicPerformanceInfoRendered = gameSetupForm["musicPerformanceInfoRendered"].checked;
   gameSetupPreferences.neverDieMode = gameSetupForm["neverDieMode"].checked;
   gameSetupPreferences.musicPerformanceTextSizeScale = gameSetupForm["musicPerformanceTextSizeScale"].value;
@@ -302,18 +313,12 @@ function showModal(dialog) {
   if(!isTheoryModalOpen) {
     pause = false;
   }
-});
-
-document.addEventListener(MidiInstrumentationEvents.MISC_EVENT, function handleMiscEvents(event) {
-  if(event.value == 'showTheoryModalBtnClick') {
-    showTheoryModal();
-  }
 }
-);
 
 function showTheoryModal() {
   isTheoryModalOpen = true;
   pause = true;
+  updateSettings();
   var scaleStepSequenceTable = document.getElementById('scaleStepSequenceTable');
   scaleStepSequenceTable.innerHTML = '';
   scaleStepSequenceTable.append(generateTableRow(gameSetupPreferences.scaleType,scaleToHalfStepAlgorithm.get(gameSetupPreferences.scaleType)));

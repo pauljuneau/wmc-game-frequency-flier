@@ -16,7 +16,7 @@ This game is free to play, but copying, distributing, or modifying this work is 
 
 Please message me if you would like to negotiate a private license. 
 
-Copyright © 2022 Paul Juneau All Rights Reserved.
+Copyright © 2022 - 2023 Paul Juneau All Rights Reserved.
 
 
 # Sponsorship:

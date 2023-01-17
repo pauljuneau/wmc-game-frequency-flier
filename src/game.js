@@ -58,7 +58,6 @@ gameState.hasChanged = function(that, propertyName) {
   return false;
 }
 var gameOver = false;
-var maxChordProgressionCount = 0;
 var bird;
 var cloud_1;
 var cloud_2;
@@ -66,9 +65,12 @@ var cloud_3;
 var clouds;
 var emitter;
 var particles;
+var lastParticleEmissionTimeStamp;
 var gameCanvas;
 var pause = false;
 var musicalPerformanceText;
+var maxChordProgressionCount = 0;
+var lastChordProgressionsPlayedCount;
 var tints = [0xFF0000,0xFFA500,0xFFFF00,0x008000,0x0000FF,0x4B0082,0xEE82EE]; //ROYGBIV
 var tintsAsHexStrings = [];
 for(var i =0; i<tints.length; i++) {
@@ -171,6 +173,16 @@ function update ()
 
   if(maxChordProgressionCount < musicConductor.chordProgressionsPlayedCount) {
     maxChordProgressionCount = musicConductor.chordProgressionsPlayedCount;
+  }
+
+  if(musicConductor.chordProgressionsPlayedCount > 0 && musicConductor.chordProgressionsPlayedCount != lastChordProgressionsPlayedCount) {
+    emitter.setVisible(true);
+    lastChordProgressionsPlayedCount = musicConductor.chordProgressionsPlayedCount;
+    lastParticleEmissionTimeStamp = performance.now();
+  }
+
+  if(emitter.visible && performance.now() - lastParticleEmissionTimeStamp >= 2000) {
+    emitter.setVisible(false);
   }
 
   for (var cloud of clouds) {

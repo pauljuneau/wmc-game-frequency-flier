@@ -64,6 +64,8 @@ var cloud_1;
 var cloud_2;
 var cloud_3;
 var clouds;
+var emitter;
+var particles;
 var gameCanvas;
 var pause = false;
 var musicalPerformanceText;
@@ -89,6 +91,7 @@ function preload ()
   this.load.image('cloud_1', 'skies/synethic223_cloud_pack/Cloud_1.png');
   this.load.image('cloud_2', 'skies/synethic223_cloud_pack/Cloud_2.png');
   this.load.image('cloud_3', 'skies/synethic223_cloud_pack/Cloud_3.png');
+  this.load.image('redParticle', 'particles/phaser_labs_red.png');
 }
 
 function create ()
@@ -105,6 +108,13 @@ function create ()
   cloud_3.scale = 0.50;
   cloud_3.setGravityY(-config.physics.arcade.gravity.y);
   clouds = [cloud_1, cloud_2, cloud_3];
+
+  particles = this.add.particles('redParticle');
+  emitter = particles.createEmitter({
+      speed: 300,
+      scale: { start: 1, end: 0 },
+      blendMode: 'ADD'
+  });
 
   this.anims.create({
     key: 'fly',
@@ -135,6 +145,9 @@ function create ()
     stroke: '#000', 
     strokeThickness: 1
   });
+
+  emitter.startFollow(bird);
+  emitter.setVisible(false);
 }
 
 function update ()

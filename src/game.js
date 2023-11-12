@@ -300,6 +300,23 @@ function clearTint(tintIndex) {
   }
 }
 
+//POPULATE GAME SETUP MODAL FORM ELEMENTS
+var chordProgressionTypeSelect = document.getElementById("chordProgressionType-select");
+for (const chordProgressionType in CHORD_PROGRESSION_TYPES) {
+  var option = document.createElement("option");
+  option.value = CHORD_PROGRESSION_TYPES[chordProgressionType];
+  option.textContent = option.value;
+  chordProgressionTypeSelect.appendChild(option);
+}
+
+var scaleTypeSelect = document.getElementById("scale-select");
+for (const oneScaleType of scaleToHalfStepAlgorithm.keys()) {
+  var option = document.createElement("option");
+  option.value = oneScaleType;
+  option.textContent = option.value;
+  scaleTypeSelect.appendChild(option);
+}
+
 //GAME SETUP DIALOG
 var theoryModal = document.getElementById('theoryModal');
 var gameSetupDialog = document.getElementById('gameSetupDialog');

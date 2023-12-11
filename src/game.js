@@ -38,12 +38,12 @@ var config = {
 //Global game objects
 var gameSetupPreferences = {
   musicPerformanceInfoRendered : false,
+  musicPerformanceTextSizeScale : 1,
   key : 'C',
   scaleType : 'major',
   chordProgressionType : musicConductor.chordProgressionType,
   maxMillisWithoutNoteInScale : 500,
   maxMillisNoChordProgCountReset : 1000,
-  musicPerformanceTextSizeScale : 1,
   neverDieMode : false
 };
 
@@ -360,15 +360,17 @@ function showGameSetupModal(event) {
   isTheoryModalOpen = false;
   pause = true;
   gameSetupForm["musicPerformanceInfoRendered"].checked = gameSetupPreferences.musicPerformanceInfoRendered;
-  gameSetupForm["neverDieMode"].checked = gameSetupPreferences.neverDieMode;
   if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
     gameSetupForm["musicPerformanceTextSizeScale"].defaultValue = "2.5";
   } else {
     gameSetupForm["musicPerformanceTextSizeScale"].defaultValue = gameSetupPreferences.musicPerformanceTextSizeScale;
   }
   gameSetupForm["keys"].value = gameSetupPreferences.key;
+  gameSetupForm["scales"].value = gameSetupPreferences.scaleType;
+  gameSetupForm["chordProgressionTypes"].value = gameSetupPreferences.chordProgressionType;
   gameSetupForm["maxMillisWithoutNoteInScale"].value = gameSetupPreferences.maxMillisWithoutNoteInScale;
   gameSetupForm["maxMillisNoChordProgCountReset"].value = gameSetupPreferences.maxMillisNoChordProgCountReset;
+  gameSetupForm["neverDieMode"].checked = gameSetupPreferences.neverDieMode;
   showModal(gameSetupDialog);
   return;
 }
@@ -396,19 +398,20 @@ document.addEventListener(MidiInstrumentationEvents.MISC_EVENT, function handleM
 }
 );
 
-function updateSettings() {
-  gameSetupPreferences.musicPerformanceInfoRendered = gameSetupForm["musicPerformanceInfoRendered"].checked;
-  gameSetupPreferences.neverDieMode = gameSetupForm["neverDieMode"].checked;
-  gameSetupPreferences.musicPerformanceTextSizeScale = gameSetupForm["musicPerformanceTextSizeScale"].value;
-  gameSetupPreferences.key = gameSetupForm["keys"].value;
-  gameSetupPreferences.scaleType = gameSetupForm["scales"].value;
-  gameSetupPreferences.chordProgressionType = gameSetupForm["chordProgressionTypes"].value;
-  musicConductor.chordProgressionType = gameSetupForm["chordProgressionTypes"].value;
+function updateSettings(source = gameSetupForm) {
+  let isForm = source == gameSetupForm;
+  gameSetupPreferences.musicPerformanceInfoRendered = isForm ? source["musicPerformanceInfoRendered"].checked : source.musicPerformanceInfoRendered;
+  gameSetupPreferences.musicPerformanceTextSizeScale = Number(isForm ? source["musicPerformanceTextSizeScale"].value : source.musicPerformanceTextSizeScale);
+  gameSetupPreferences.key = isForm ? source["keys"].value : source.key;
+  gameSetupPreferences.scaleType = isForm ? source["scales"].value : source.scaleType;
+  gameSetupPreferences.chordProgressionType = isForm ? source["chordProgressionTypes"].value : source.chordProgressionType;
+  musicConductor.chordProgressionType = gameSetupPreferences.chordProgressionType;
   changeKeyAndScale(gameSetupPreferences.key, gameSetupPreferences.scaleType);
-  gameSetupPreferences.maxMillisWithoutNoteInScale = gameSetupForm["maxMillisWithoutNoteInScale"].value;
+  gameSetupPreferences.maxMillisWithoutNoteInScale = Number(isForm ? source["maxMillisWithoutNoteInScale"].value : source.maxMillisWithoutNoteInScale);
   musicConductor.maxMillisWithoutNoteInScale = gameSetupPreferences.maxMillisWithoutNoteInScale;
-  gameSetupPreferences.maxMillisNoChordProgCountReset = gameSetupForm["maxMillisNoChordProgCountReset"].value;
+  gameSetupPreferences.maxMillisNoChordProgCountReset = Number(isForm ? source["maxMillisNoChordProgCountReset"].value : source.maxMillisNoChordProgCountReset);
   musicConductor.maxMillisNoChordProgCountReset = gameSetupPreferences.maxMillisNoChordProgCountReset;
+  gameSetupPreferences.neverDieMode = isForm ? source["neverDieMode"].checked : source.neverDieMode;
   setCookie('gameSetupPreferences',JSON.stringify(gameSetupPreferences),1);
   if(!isTheoryModalOpen) {
     pause = false;
@@ -475,3 +478,13 @@ function filterRows(filter, tableId, checkboxId) {
     }
   }
 }
+
+
+//Load gameSetupPreferences from cookie
+var gsp;
+try {
+  gsp = JSON.parse(getCookie('gameSetupPreferences'))
+} catch (error) {
+}
+var isGSP = gsp != undefined && gsp instanceof Object && gsp.key != undefined; 
+if(isGSP) updateSettings(gsp);

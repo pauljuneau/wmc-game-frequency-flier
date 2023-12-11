@@ -40,6 +40,7 @@ var gameSetupPreferences = {
   musicPerformanceInfoRendered : false,
   key : 'C',
   scaleType : 'major',
+  chordProgressionType : musicConductor.chordProgressionType,
   maxMillisWithoutNoteInScale : 500,
   maxMillisNoChordProgCountReset : 1000,
   musicPerformanceTextSizeScale : 1,
@@ -401,12 +402,14 @@ function updateSettings() {
   gameSetupPreferences.musicPerformanceTextSizeScale = gameSetupForm["musicPerformanceTextSizeScale"].value;
   gameSetupPreferences.key = gameSetupForm["keys"].value;
   gameSetupPreferences.scaleType = gameSetupForm["scales"].value;
+  gameSetupPreferences.chordProgressionType = gameSetupForm["chordProgressionTypes"].value;
   musicConductor.chordProgressionType = gameSetupForm["chordProgressionTypes"].value;
   changeKeyAndScale(gameSetupPreferences.key, gameSetupPreferences.scaleType);
   gameSetupPreferences.maxMillisWithoutNoteInScale = gameSetupForm["maxMillisWithoutNoteInScale"].value;
   musicConductor.maxMillisWithoutNoteInScale = gameSetupPreferences.maxMillisWithoutNoteInScale;
   gameSetupPreferences.maxMillisNoChordProgCountReset = gameSetupForm["maxMillisNoChordProgCountReset"].value;
   musicConductor.maxMillisNoChordProgCountReset = gameSetupPreferences.maxMillisNoChordProgCountReset;
+  setCookie('gameSetupPreferences',JSON.stringify(gameSetupPreferences),1);
   if(!isTheoryModalOpen) {
     pause = false;
   }

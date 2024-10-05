@@ -1,5 +1,5 @@
 # ![wmc-logo](https://www.pauljuneauengineer.com/webmidi-conductor/webMidiConductor/favicon.ico) wmc-game-frequency-flier
-Created with [Phaser 3.55.2](https://newdocs.phaser.io/docs/3.55.2) and player movement using [WebMidi Conductor v2.5.1](https://github.com/pauljuneau/webmidi-conductor/tree/v2.5.1)
+Created with [Phaser 3.55.2](https://newdocs.phaser.io/docs/3.55.2) and player movement using [WebMidi Conductor v2.11.0](https://github.com/pauljuneau/webmidi-conductor/tree/v2.11.0)
 
 [Click here to play!](https://www.pauljuneauengineer.com/wmc-game-frequency-flier/)
 

@@ -431,6 +431,7 @@ function showTheoryModal() {
   var chordsStepCombinationsTable = document.getElementById('chordsStepCombinationsTable');
   document.getElementById('triadsOnly_chordsStepCombinations').checked = true;
   document.getElementById('7thsOnly_chordsStepCombinations').checked = true;
+  document.getElementById('intervalsOnly_chordsStepCombinations').checked = true;
   chordsStepCombinationsTable.innerHTML = '';
   for(const [chordName, stepCombination] of stepCombinationByChordName) {
       chordsStepCombinationsTable.append(generateTableRow(chordName,stepCombination));
